@@ -1,0 +1,50 @@
+.paginationList {
+    display: flex !important;
+    align-items: center;
+  }
+  
+  .pageNumber,
+  .numberSeparator {
+    width: 32px;
+    height: 32px;
+    color: #718096;
+    font-size: 14px;
+    font-family: danaRegular;
+    line-height: 18px;
+    word-wrap: break-word;
+    border-radius: 4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: none;
+    cursor: pointer;
+  }
+  
+  .pervious,
+  .next {
+    width: 16px;
+    height: 16px;
+    color: #718096;
+    font-size: 16px !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: none;
+    cursor: pointer;
+  }
+  
+  .pageNumber:active,
+  .pervious:active,
+  .next:active,
+  .active {
+    background-color: #00000030;
+  }
+  
+  .disable > .pervious,
+  .disable > .next {
+    cursor: not-allowed;
+  }
+  
+  .numberSeparator {
+    cursor: default;
+  }
