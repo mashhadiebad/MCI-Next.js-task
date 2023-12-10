@@ -5,6 +5,8 @@ import style from "./Main.module.css";
 import Pagination from "../Pagination/Pagination";
 import usePerPageStore from "@/app/store/perPageStore";
 import usePageStore from "@/app/store/pageStore";
+import FilterModal from "../FilterModal/FilterModal";
+import useFilterStore from "@/app/store/FilterStore";
 
 interface Props {
   userData: {
@@ -28,6 +30,8 @@ const Main = ({ userData }: Props) => {
   const [totalPageNumber, setTotalPageNumber] = useState<number>(2);
   const { page, setPage } = usePageStore();
   const { perPage, setPerPage } = usePerPageStore();
+  const { filterData } = useFilterStore();
+  const [filtereddList, setFilteredList] = useState<list[]>();
 
   const handlePerPageInput = (event: any) => {
     if (!event.target.value || Number(event.target.value <= 0)) {
@@ -57,6 +61,48 @@ const Main = ({ userData }: Props) => {
     setListData(filteredList);
   };
 
+  const handleChangeFilter = () => {
+    if (filterData.length > 1) {
+      let newList = filterData.reduce((result, filter) => {
+        const { header, condition, value } = filter;
+
+        return result.filter((item) => {
+          const headerValue = item[header];
+
+          switch (condition) {
+            case "==":
+              return headerValue == value;
+            case "<":
+              return headerValue < value;
+            case ">":
+              return headerValue > value;
+            case "<=":
+              return headerValue <= value;
+            case ">=":
+              return headerValue >= value;
+            case "!=":
+              return headerValue != value;
+            default:
+              return false;
+          }
+        });
+      }, userData || []);
+      setFilteredList(newList);
+    } else {
+      let newList = userData;
+      setFilteredList(newList);
+      console.log(filtereddList);
+    }
+
+    const totalPageNumber = Math.ceil(userData.length / perPage);
+    setTotalPageNumber(totalPageNumber);
+    let filteredList: list[] = userData.filter(
+      (user: any, index: number) =>
+        index >= (page - 2) * perPage && index < page * perPage
+    );
+    setListData(filteredList);
+  };
+
   useEffect(() => {
     handleChangePerPage();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -66,6 +112,11 @@ const Main = ({ userData }: Props) => {
     handleChangePage();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page]);
+
+  useEffect(() => {
+    handleChangeFilter();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filterData]);
 
   return (
     <div className="flex flex-col justify-center items-center w-full pt-3">
@@ -106,58 +157,7 @@ const Main = ({ userData }: Props) => {
       </div>
       <div className="flex justify-around items-center w-full pt-5 pb-20">
         <Pagination totalPages={totalPageNumber} />
-        <button
-          className="btn btn-outline"
-          onClick={() => document.getElementById("filterModal").showModal()}
-        >
-          Filter
-        </button>
-        <dialog id="filterModal" className="modal">
-          <div className="modal-box">
-            <div className="overflow-x-auto">
-              <table className="table">
-                {/* head */}
-                <thead>
-                  <tr>
-                    <th></th>
-                    <th>Name</th>
-                    <th>Job</th>
-                    <th>Favorite Color</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {/* row 1 */}
-                  <tr>
-                    <th>1</th>
-                    <td>Cy Ganderton</td>
-                    <td>Quality Control Specialist</td>
-                    <td>Blue</td>
-                  </tr>
-                  {/* row 2 */}
-                  <tr>
-                    <th>2</th>
-                    <td>Hart Hagerty</td>
-                    <td>Desktop Support Technician</td>
-                    <td>Purple</td>
-                  </tr>
-                  {/* row 3 */}
-                  <tr>
-                    <th>3</th>
-                    <td>Brice Swyre</td>
-                    <td>Tax Accountant</td>
-                    <td>Red</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <div className="modal-action">
-              <form method="dialog flex justify-center w-full">
-                {/* if there is a button in form, it will close the modal */}
-                <button className="btn text-xl font-bold">ٍُSEARCH</button>
-              </form>
-            </div>
-          </div>
-        </dialog>
+        <FilterModal />
         <input
           style={{ width: "150px" }}
           type="number"
