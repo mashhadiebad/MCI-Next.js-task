@@ -32,9 +32,8 @@ export default function Home() {
     return <div className="">error</div>;
   }
   if (isSuccess) {
-    console.log(userData);
     return (
-      <div className="">
+      <div>
         <Header />
         <Main userData={userData.data} />
         <footer className="footer footer-center p-3 bg-base-300 text-base-content fixed bottom-0">

@@ -1,5 +1,4 @@
 import React, { useState, ChangeEvent } from "react";
-import style from "./FilterModal.module.css";
 import useFilterStore from "@/app/store/filterStore";
 
 interface condition {

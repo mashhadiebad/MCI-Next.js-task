@@ -1,6 +1,5 @@
 "use client";
 import { useState } from "react";
-import style from "./Header.module.css";
 import useThemeStore from "@/app/store/store";
 
 const Header = () => {
@@ -14,8 +13,6 @@ const Header = () => {
       setInputValue("light");
       setLight();
     }
-
-    console.log(inputValue);
   };
   const { theme, setDark, setLight } = useThemeStore();
   return (

@@ -6,8 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "test": "jest --watch"
+    "lint": "next lint"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.12.2",
@@ -29,10 +28,6 @@
   },
   "devDependencies": {
     "@tanstack/eslint-plugin-query": "^5.12.1",
-    "@testing-library/jest-dom": "^6.1.5",
-    "@testing-library/react": "^14.1.2",
-    "daisyui": "^4.4.19",
-    "jest": "^29.7.0",
-    "jest-environment-jsdom": "^29.7.0"
+    "daisyui": "^4.4.19"
   }
 }

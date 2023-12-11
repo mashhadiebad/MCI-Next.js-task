@@ -1,7 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import style from "./Main.module.css";
 import Pagination from "../Pagination/Pagination";
 import usePerPageStore from "@/app/store/perPageStore";
 import usePageStore from "@/app/store/pageStore";
