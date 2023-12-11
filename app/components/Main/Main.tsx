@@ -6,7 +6,7 @@ import Pagination from "../Pagination/Pagination";
 import usePerPageStore from "@/app/store/perPageStore";
 import usePageStore from "@/app/store/pageStore";
 import FilterModal from "../FilterModal/FilterModal";
-import useFilterStore from "@/app/store/FilterStore";
+import useFilterStore from "@/app/store/filterStore";
 
 interface Props {
   userData: {
@@ -31,7 +31,7 @@ const Main = ({ userData }: Props) => {
   const { page, setPage } = usePageStore();
   const { perPage, setPerPage } = usePerPageStore();
   const { filterData } = useFilterStore();
-  const [filtereddList, setFilteredList] = useState<list[]>();
+  const [filteredData, setFilteredData] = useState<list[]>([]);
 
   const handlePerPageInput = (event: any) => {
     if (!event.target.value || Number(event.target.value <= 0)) {
@@ -43,65 +43,72 @@ const Main = ({ userData }: Props) => {
   };
 
   const handleChangePerPage = () => {
-    const totalPageNumber = Math.ceil(userData.length / perPage);
+    const totalPageNumber = Math.ceil(filteredData.length / perPage);
     setPage(1);
     setTotalPageNumber(totalPageNumber);
-    let filteredList: list[] = userData.filter(
-      (user: any) => user.id > (page - 1) * perPage && user.id <= page * perPage
+    let filteredList: list[] = filteredData.slice(
+      (page - 1) * perPage,
+      page * perPage
     );
     setListData(filteredList);
   };
 
   const handleChangePage = () => {
-    const totalPageNumber = Math.ceil(userData.length / perPage);
+    const totalPageNumber = Math.ceil(filteredData.length / perPage);
     setTotalPageNumber(totalPageNumber);
-    let filteredList: list[] = userData.filter(
-      (user: any) => user.id > (page - 1) * perPage && user.id <= page * perPage
+    let filteredList: list[] = filteredData.slice(
+      (page - 1) * perPage,
+      page * perPage
     );
     setListData(filteredList);
   };
 
   const handleChangeFilter = () => {
-    if (filterData.length > 1) {
-      let newList = filterData.reduce((result, filter) => {
-        const { header, condition, value } = filter;
+    let newList = filterData.reduce((result, filter) => {
+      const { header, condition, value } = filter;
 
-        return result.filter((item) => {
-          const headerValue = item[header];
+      return result.filter((item) => {
+        const headerValue = item[header];
 
-          switch (condition) {
-            case "==":
-              return headerValue == value;
-            case "<":
-              return headerValue < value;
-            case ">":
-              return headerValue > value;
-            case "<=":
-              return headerValue <= value;
-            case ">=":
-              return headerValue >= value;
-            case "!=":
-              return headerValue != value;
-            default:
-              return false;
-          }
-        });
-      }, userData || []);
-      setFilteredList(newList);
-    } else {
-      let newList = userData;
-      setFilteredList(newList);
-      console.log(filtereddList);
-    }
+        switch (condition) {
+          case "==":
+            return headerValue == value;
+          case "<":
+            return headerValue < value;
+          case ">":
+            return headerValue > value;
+          case "<=":
+            return headerValue <= value;
+          case ">=":
+            return headerValue >= value;
+          case "!=":
+            return headerValue != value;
+          case "":
+            return true;
+          default:
+            return false;
+        }
+      });
+    }, userData);
 
-    const totalPageNumber = Math.ceil(userData.length / perPage);
-    setTotalPageNumber(totalPageNumber);
-    let filteredList: list[] = userData.filter(
-      (user: any, index: number) =>
-        index >= (page - 2) * perPage && index < page * perPage
+    const totalPageNumber = Math.ceil(newList.length / perPage);
+    let filteredList: list[] = newList.slice(
+      (page - 1) * perPage,
+      page * perPage
     );
-    setListData(filteredList);
+
+    setTimeout(() => {
+      setFilteredData(newList);
+      setTotalPageNumber(totalPageNumber);
+      setPage(1);
+      setListData(filteredList);
+    }, 0);
   };
+
+  useEffect(() => {
+    handleChangeFilter();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filterData]);
 
   useEffect(() => {
     handleChangePerPage();
@@ -112,11 +119,6 @@ const Main = ({ userData }: Props) => {
     handleChangePage();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page]);
-
-  useEffect(() => {
-    handleChangeFilter();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filterData]);
 
   return (
     <div className="flex flex-col justify-center items-center w-full pt-3">

@@ -1,6 +1,6 @@
 import React, { useState, ChangeEvent } from "react";
 import style from "./FilterModal.module.css";
-import useFilterStore from "@/app/store/FilterStore";
+import useFilterStore from "@/app/store/filterStore";
 
 interface condition {
   header: string;
@@ -146,7 +146,9 @@ const FilterModal = () => {
               <button
                 className="btn btn-outline btn-primary mt-5 font-bold text-xl"
                 onClick={() => {
-                  setFilterList(filterConditions.filter((item) => item.value));
+                  setFilterList(
+                    filterConditions.filter((item) => item.value != "")
+                  );
                 }}
               >
                 Confirm Filter

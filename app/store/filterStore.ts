@@ -6,7 +6,7 @@ interface filterStore{
 }
 
 const useFilterStore = create<filterStore>(set => ({
-    filterData: [{header:'', condition:'', value:''}],
+    filterData: [],
     setFilterList: (updatedFilterData:{header:string; condition:string; value:string}[]) => set(() => ({filterData:updatedFilterData})),
 }))
 
